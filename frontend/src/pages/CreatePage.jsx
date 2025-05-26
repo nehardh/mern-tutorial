@@ -1,74 +1,98 @@
 import { useState } from 'react'
-import { Container, VStack, Heading, Box, useColorModeValue, Input, Button, useToast} from '@chakra-ui/react'
+import {
+  Container, VStack, Heading, Box, useColorModeValue,
+  Input, Button, useToast, FormControl, FormLabel
+} from '@chakra-ui/react'
 import { useProductStore } from '../store/product'
 
 const CreatePage = () => {
+  const [newProduct, setNewProduct] = useState({
+    name: "",
+    price: "",
+    image: ""
+  });
 
-    const [newProduct, setNewProduct] = useState({
-        name: "",
-        price: "",
-        image: ""
+  const [loading, setLoading] = useState(false);
+  const toast = useToast();
+  const { createProduct } = useProductStore();
+
+  const handleAddProduct = async () => {
+    setLoading(true);
+    const { success, message } = await createProduct(newProduct);
+    setLoading(false);
+    toast({
+      description: message,
+      status: success ? "success" : "error",
+      isClosable: true,
+      duration: 3000,
+      position: "top"
     });
-
-    const toast = useToast();
-    const {createProduct} = useProductStore();
-    const handleAddProduct = async () => {
-        const {success, message} = await createProduct(newProduct);
-        if(!success) {
-            toast({
-                description: message,
-                status: "error",
-                isClosable: true
-            })
-        } else {
-            toast({
-                description: message,
-                status: "success",
-                isClosable: true
-            })
-        }
-        setNewProduct({
-            name: "",
-            price: "",
-            image: ""
-        })
+    if (success) {
+      setNewProduct({ name: "", price: "", image: "" });
     }
+  }
 
-  return <Container maxW={"container.sm"}>
-    <VStack
-        spacing={8}
-    >
-        <Heading as={"h1"} size={"2xl"} mb={8}>Create New Product</Heading>
+  const bgBox = useColorModeValue("white", "gray.800");
+
+  return (
+    <Container maxW="container.sm" py={10}>
+      <VStack spacing={8}>
+        <Heading as="h1" size="2xl" textAlign="center" color="blue.500">
+          Create New Product
+        </Heading>
         <Box
-            w={"full"} bg={useColorModeValue("white", "greya.800")} p={6} rounded={"lg"} shadow={"md"}
+          w="full"
+          bg={bgBox}
+          p={8}
+          rounded="2xl"
+          shadow="lg"
+          borderWidth={1}
         >
-            <VStack spacing={4}>
-                <Input 
-                    placeholder="Name"
-                    name="name"
-                    value={newProduct.name}
-                    onChange={(e) => setNewProduct({...newProduct, name: e.target.value})}
-                />
-                <Input 
-                    placeholder="Price"
-                    name="price"
-                    type="number"
-                    value={newProduct.price}
-                    onChange={(e) => setNewProduct({...newProduct, price: e.target.value})}
-                />
-                <Input 
-                    placeholder="Image URL"
-                    name="image"
-                    value={newProduct.image}
-                    onChange={(e) => setNewProduct({...newProduct, image: e.target.value})}
-                />
-                <Button colorScheme="blue" w={"full"} onClick={handleAddProduct}>
-                    Add Product
-                </Button>
-            </VStack>
+          <VStack spacing={6}>
+            <FormControl isRequired>
+              <FormLabel>Product Name</FormLabel>
+              <Input
+                placeholder="e.g., Apple iPhone 14"
+                value={newProduct.name}
+                onChange={(e) => setNewProduct({ ...newProduct, name: e.target.value })}
+              />
+            </FormControl>
+
+            <FormControl isRequired>
+              <FormLabel>Price ($)</FormLabel>
+              <Input
+                placeholder="e.g., 999"
+                type="number"
+                value={newProduct.price}
+                onChange={(e) => setNewProduct({ ...newProduct, price: e.target.value })}
+              />
+            </FormControl>
+
+            <FormControl>
+              <FormLabel>Image URL</FormLabel>
+              <Input
+                placeholder="https://example.com/product.jpg"
+                value={newProduct.image}
+                onChange={(e) => setNewProduct({ ...newProduct, image: e.target.value })}
+              />
+            </FormControl>
+
+            <Button
+              colorScheme="blue"
+              w="full"
+              size="lg"
+              isLoading={loading}
+              loadingText="Adding..."
+              onClick={() => handleAddProduct}
+              rounded="xl"
+            >
+              Add Product
+            </Button>
+          </VStack>
         </Box>
-    </VStack>
-  </Container>
+      </VStack>
+    </Container>
+  );
 }
 
-export default CreatePage
+export default CreatePage;
