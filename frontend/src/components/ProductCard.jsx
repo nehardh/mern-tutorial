@@ -137,13 +137,13 @@ const ProductCard = ({ product }) => {
                 setUpdatedProduct(product);
                 onOpen();
               }}
-              colorScheme="blue"
+              colorScheme="black"
               aria-label="Edit product"
             />
             <IconButton
               icon={<DeleteIcon />}
               onClick={onDeleteOpen}
-              colorScheme="red"
+              colorScheme="black"
               aria-label="Delete product"
             />
           </HStack>

@@ -4,6 +4,7 @@ import {
   Input, Button, useToast, FormControl, FormLabel
 } from '@chakra-ui/react'
 import { useProductStore } from '../store/product'
+import { useNavigate } from 'react-router-dom' // <-- Step 1: Import
 
 const CreatePage = () => {
   const [newProduct, setNewProduct] = useState({
@@ -15,6 +16,7 @@ const CreatePage = () => {
   const [loading, setLoading] = useState(false);
   const toast = useToast();
   const { createProduct } = useProductStore();
+  const navigate = useNavigate(); // <-- Step 2: Initialize
 
   const handleAddProduct = async () => {
     setLoading(true);
@@ -29,6 +31,7 @@ const CreatePage = () => {
     });
     if (success) {
       setNewProduct({ name: "", price: "", image: "" });
+      navigate("/"); // <-- Step 3: Redirect to home
     }
   }
 
