@@ -83,7 +83,7 @@ const CreatePage = () => {
               size="lg"
               isLoading={loading}
               loadingText="Adding..."
-              onClick={() => handleAddProduct}
+              onClick={handleAddProduct}
               rounded="xl"
             >
               Add Product
